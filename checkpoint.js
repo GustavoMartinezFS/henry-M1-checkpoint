@@ -329,8 +329,26 @@ function closureSum(numFijo) {
 //    const anagrams = allAnagrams('abc');
 //    console.log(anagrams); // [ 'abc', 'acb', 'bac', 'bca', 'cab', 'cba' ]
 
-var allAnagrams = function(string, array, index) {
 
+var allAnagrams = function(string) {
+    if(string.length < 2) return [string];
+    else{
+        var all = [];
+        for(var i = 0; i < string.length; i++){
+            var array = string.split("");
+            var letra = array[i];
+            array.splice( i, 1 );
+            var an = allAnagrams(array.join(""));
+            for(var j = 0; j < an.length; j++){
+                band=true;
+                all.forEach(function(element){
+                    if(element === letra + an[j] ) band=false;
+                })
+                if(band) all.push(letra + an[j]);
+            }
+        }
+    return all;
+    }
 };
 
 module.exports = {
