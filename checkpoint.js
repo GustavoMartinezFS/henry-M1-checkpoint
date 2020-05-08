@@ -41,9 +41,15 @@ const {
 //   - Caso que devuelve false --> objContains(user, "empleo", "Empleado en planta nuclear");
 // Pista: utilizar typeof para determinar si el valor de una propiedad es un objeto para aplicar
 // allí la recursión
-
 var objContains = function(obj, prop, value){
- 
+    for(i in obj){
+        if(i === prop && obj[i] === value){
+   			bandera= true;
+            break;
+   		}else bandera = false;
+   		if(typeof obj[i] === 'object' ) objContains(obj[i],prop,value);
+   	}
+   	return bandera;
 }
 
 
@@ -58,7 +64,16 @@ var objContains = function(obj, prop, value){
 // [Para más información del método: https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Objetos_globales/Array/isArray]
 
 var countArray = function(array){
-  
+    if(!array.length) return 0;
+    for(var i=0; i <array.length; i++){
+    if(Array.isArray(array[i])) countArray(array[i])
+    else sumar(array[i])
+  }
+  return suma;
+}
+var suma= 0;
+function sumar(valor){
+  suma+=valor;
 }
 
 // ---------------------
@@ -78,7 +93,15 @@ var countArray = function(array){
 //    lista.size(); --> 3
 
 LinkedList.prototype.size = function(){
- 
+    var tamanio = 0;
+    var nodo = this.head;
+
+   while (nodo != null)
+   {
+       tamanio++;
+       nodo = nodo.next;
+   }
+   return tamanio;
 }
 
 
@@ -99,7 +122,25 @@ LinkedList.prototype.size = function(){
 //    sin antes tener cargada la posición 0 y 1.
 
 LinkedList.prototype.addInPos = function(pos, value){
-  
+    if (pos > 0 && pos > this.size()) return false;
+    else {
+        var node = new Node(value);
+        if (pos === 0) {
+            node.next = this.head;
+            this.head = node;
+        } else {
+            curr = this.head;
+            var it = 0;
+            while (it < pos) {
+                it++;
+                prev = curr;
+                curr = curr.next;
+            }
+            node.next = curr;
+            prev.next = node;
+        }
+    }
+    return true;
 }
 
 // EJERCICIO 5
@@ -110,7 +151,16 @@ LinkedList.prototype.addInPos = function(pos, value){
 //    Lista nueva luego de aplicar el reverse: Head --> 13 --> 10 --> 4 --> 1 --> null
 
 LinkedList.prototype.reverse = function(){
- 
+    var link = this;
+    var nuevo = new LinkedList();
+	var nodoActual = this.head.next;
+  	var nodoPrevious = this.head;
+	while(link.size() >0){
+		if(nodoActual.next === null) nuevo.add(link.remove());
+		nodoPrevious = nodoActual;
+        if(nodoActual.next) nodoActual = nodoActual.next;
+	}
+    return nuevo;
 }
 
 
@@ -138,10 +188,25 @@ LinkedList.prototype.reverse = function(){
 //    Primer mano:
 //     A --> 4  vs  6 <-- B [6 > 4 entones gana la mano B y pone ambas cartas en su mazo, colocando primero la suya]
 //    - mazoUserA = [2,10,11]
-//    - mazoUserB = [6,9,10,3,6,4]
+//    - mazoUserB = [9,10,3,6,4]
 
 var cardGame = function(mazoUserA, mazoUserB){
-
+    while(mazoUserA.size() !== 0 || mazoUserB.size() !== 0){
+        if(mazoUserA.size() === 0) return "B wins!"
+        if(mazoUserB.size() === 0) return "A wins!"
+        var playerA = mazoUserA.dequeue();
+        var playerB = mazoUserB.dequeue();
+        if(playerA === playerB) continue;
+        if(playerA > playerB){
+            mazoUserA.enqueue(playerA);
+            mazoUserA.enqueue(playerA);
+        }
+        if(playerA < playerB){
+            mazoUserB.enqueue(playerB);
+            mazoUserB.enqueue(playerB);
+        }
+    }
+    if(mazoUserA.size() === 0 && mazoUserB.size() === 0 ) return "Game tie!"
 }
 
 // ---------------
@@ -164,7 +229,10 @@ var cardGame = function(mazoUserA, mazoUserB){
 //       5
 
 var generateBST = function(array){
- 
+    var tree = new BinarySearchTree(array[0]);
+    array.shift();
+    array.forEach(elemento => tree.insert(elemento));
+    return tree;
 }
 
 
@@ -185,8 +253,21 @@ var generateBST = function(array){
 
 
 var binarySearch = function (array, target) {
+    var pri = 0;
+    var ulti = array.length - 1;
+    var position = -1;
+    var pillado = false;
+    var medio;
 
-  
+    while (pillado === false && pri <= ulti) {
+        medio = Math.floor((pri + ulti)/2);
+        if (array[medio] === target) {
+            pillado = true;
+            position = medio;
+        } else if (array[medio] > target) ulti = medio - 1;
+         else pri = medio + 1;
+    }
+    return position;
 }
 
 // EJERCICIO 9
@@ -196,10 +277,24 @@ var binarySearch = function (array, target) {
 //    - https://www.khanacademy.org/computing/computer-science/algorithms/sorting-algorithms/a/sorting
 // Ejemplo:
 //     selectionSort([1, 6, 2, 5, 3, 4]) --> [1, 2, 3, 4, 5, 6]
-
+function swap(array, j, i){
+  if( j === i ) return array;
+  var aux = array[j];
+  array[j] = array[i];
+  array[i] = aux;
+  return array;
+}
 
 var selectionSort = function(array) {
-  
+    var size = array.length;
+  for( var i = 0; i < size -1; i ++ ){
+    var menor = i;
+    for( var j = i + 1; j < size; j++ ){
+      if( array[j] < array[menor] ) menor = j;
+    }
+    swap( array, menor, i );
+  }
+  return array;
 }
 
 // ----- Closures -----
@@ -217,7 +312,9 @@ var selectionSort = function(array) {
 //    sumaDiez(11); --> Devolverá 21 (Ya que 11 + 10 = 21)
 
 function closureSum(numFijo) {
- 
+    return function(par){
+        return numFijo + par;
+    }
 }
 
 // -------------------
@@ -233,7 +330,7 @@ function closureSum(numFijo) {
 //    console.log(anagrams); // [ 'abc', 'acb', 'bac', 'bca', 'cab', 'cba' ]
 
 var allAnagrams = function(string, array, index) {
- 
+
 };
 
 module.exports = {

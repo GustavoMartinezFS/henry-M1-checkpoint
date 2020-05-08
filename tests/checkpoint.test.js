@@ -94,9 +94,9 @@ describe('Checkpoint Tests', function() {
       linkedList.add(2);
       linkedList.add(3);
       var revertedLinkedList = linkedList.reverse();
-      expect(revertedLinkedList.remove().value).to.equal(1);
-      expect(revertedLinkedList.remove().value).to.equal(2);
-      expect(revertedLinkedList.remove().value).to.equal(3);
+      expect(revertedLinkedList.remove()).to.equal(1);
+      expect(revertedLinkedList.remove()).to.equal(2);
+      expect(revertedLinkedList.remove()).to.equal(3);
     });
   });
 
@@ -192,9 +192,6 @@ describe('Checkpoint Tests', function() {
       expect(sumaCinco(11)).to.equal(16);
       expect(sumaDiez(2)).to.equal(12);
       expect(sumaDiez(11)).to.equal(21);
-    });
-    it('Debe devolver un arregle vacío si el argumento recibido es un array vacío', function() {
-      expect(selectionSort([])).to.deep.equal([]);
     });
   });
 
